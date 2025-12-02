@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.pedroPathing; // make sure this aligns with class location
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.drawOnlyCurrent;
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.telemetryM;
+
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
@@ -134,12 +139,17 @@ public class Auto extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
+        telemetryM.update(telemetry);
 
     }
 
     /** This method is called continuously after Init while waiting for "play". **/
     @Override
-    public void init_loop() {}
+    public void init_loop() {
+        telemetryM.update(telemetry);
+        follower.update();
+        drawOnlyCurrent();
+    }
 
     /** This method is called once at the start of the OpMode.
      * It runs all the setup actions, including building paths and starting the path system **/
@@ -147,6 +157,9 @@ public class Auto extends OpMode {
     public void start() {
         opmodeTimer.resetTimer();
         setPathState(0);
+
+        follower.activateAllPIDFs();
+
     }
 
     /** We do not use this because everything should automatically disable **/

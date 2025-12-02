@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.telemetryM;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,11 +10,9 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-//gamepad 1 is driver
-//gamepad 2 is operator
 @TeleOp
 @Configurable
-public class Teleop extends LinearOpMode {
+public class test extends LinearOpMode {
     int count = 0;
     double setSpeed = 1;
 
@@ -76,7 +77,7 @@ public class Teleop extends LinearOpMode {
             if(gamepad1.dpad_left){
                 setSpeed = 2.25;
             }
-
+/*
 
 // Flywheel/Launch code (made continuous so we don't have to hold down)
             //track how many times pressed
@@ -91,34 +92,26 @@ public class Teleop extends LinearOpMode {
             }else if(count == 0){
                 fly.setPower(0);
             }else{
-                fly.setPower(.67
-                );
+                fly.setPower(.70);
             }
-/*
-            //preess
 
-            if(gamepad2.leftBumperWasPressed()){
-                fly.setPower(.61);
+            //preess
+*/
+            if(gamepad1.leftBumperWasPressed()){
+                fly.setPower(.67);
             }
-            if(gamepad2.leftBumperWasReleased()){
+            if(gamepad1.leftBumperWasReleased()){
                 fly.setPower(0);
             }
-*/
-
-
-
-
-
-
 
 
 
             //Servo push into flywheel
-            if(gamepad2.aWasPressed()){
+            if(gamepad1.aWasPressed()){
                 rs.setPower(.67);
                 ls.setPower(.67);
             }
-            if(gamepad2.aWasReleased()){
+            if(gamepad1.aWasReleased()){
                 rs.setPower(-.67);
                 ls.setPower(-.67);
             }

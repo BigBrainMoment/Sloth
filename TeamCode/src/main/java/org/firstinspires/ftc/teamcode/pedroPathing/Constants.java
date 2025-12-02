@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.pedropathing.control.FilteredPIDFCoefficients;
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -16,7 +18,18 @@ public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(8.4)
             .forwardZeroPowerAcceleration(-34.138)
-            .lateralZeroPowerAcceleration(-55.933);
+            .lateralZeroPowerAcceleration(-55.933)
+            //.translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0.03))
+            //.headingPIDFCoefficients(new PIDFCoefficients(0.9, 0, 0.02, 0.03))
+            //.secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.1,0,0.01,0.6,0.01))
+
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.12, 0, 0.01, 0.001))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.9, 0, 0.02, 0.0))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.1,0,0.01,0.6,0.0))
+            .centripetalScaling(0.05);
+
+
+
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
@@ -27,8 +40,8 @@ public class Constants {
                 .build();
     }
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(5)
-            .strafePodX(3)
+            .forwardPodY(2)
+            .strafePodX(4)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
