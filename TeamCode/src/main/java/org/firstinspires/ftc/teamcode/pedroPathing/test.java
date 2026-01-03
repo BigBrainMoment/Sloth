@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @Configurable
 public class test extends LinearOpMode {
     int count = 0;
+    boolean run = false;
     double setSpeed = 1;
 
     @Override
@@ -99,15 +100,17 @@ public class test extends LinearOpMode {
 */
             if(gamepad1.leftBumperWasPressed()){
                 fly.setPower(.67);
+                run = true;
             }
             if(gamepad1.leftBumperWasReleased()){
                 fly.setPower(0);
+                run = false;
             }
 
 
 
             //Servo push into flywheel
-            if(gamepad1.aWasPressed()){
+            if(gamepad1.aWasPressed() && run){
                 rs.setPower(.67);
                 ls.setPower(.67);
             }

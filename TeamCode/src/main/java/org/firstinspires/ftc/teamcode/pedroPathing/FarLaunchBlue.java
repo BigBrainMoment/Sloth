@@ -17,14 +17,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Auto that was working before" ,group = "Examples")
-@Disabled
+@Autonomous(name = "NOOOOOOO" ,group = "Examples")
 
-
-public class PreTest extends OpMode {
+public class FarLaunchBlue extends OpMode {
     CRServo ls, rs;
 
-    /// METHODS
+    /// M   E   T   H   O   D   S ///
     private static ElapsedTime timer = new ElapsedTime();
     public void push(double milliseconds){
         // 400 = 1 push
@@ -35,10 +33,11 @@ public class PreTest extends OpMode {
         ls.setPower(0);
     }
 
-
-
-
-
+    public void shootThree(){
+        push(400);
+        push(400);
+        push(400);
+    }
 
 
     ///     ///     ///     ///     ///     ///     ///     ///     ///
@@ -47,11 +46,25 @@ public class PreTest extends OpMode {
     private int pathState;
 
 
-    private final Pose startPose = new Pose(118.4, 129.6, Math.toDegrees(0));
+
+    private final Pose startPoint = new Pose(88,8,Math.toDegrees(90));
+    private final Pose Path1 = new Pose(88,21.7,Math.toDegrees(123));
+    private final Pose Path2 = new Pose(100,35.5,Math.toDegrees(0));
+    private final Pose Path3 = new Pose(135,35.5,Math.toDegrees(0));
+    private final Pose Path4 = new Pose( 99.9,42.1,Math.toDegrees(138));
+    private final Pose Path5 = new Pose(100,59.9,Math.toDegrees(0));
+    private final Pose Path6 = new Pose(128,59.7,Math.toDegrees(0));
+    private final Pose Path7 = new Pose(99,75,Math.toDegrees(150));
+    private final Pose Path8 = new Pose(105.5,84,Math.toDegrees(0));
+    private final Pose Path9 = new Pose(131,84,Math.toDegrees(0));
+    private final Pose Path10 = new Pose(120,90,Math.toDegrees(156));
+    private final Pose Path11 = new Pose(87,40,Math.toDegrees(90));
+
+    private final Pose startPose = new Pose(120.2, 125, Math.toDegrees(45));
     // Start Pose of robot, this is red goal, 4back until touching white line, parellel to deposit (36.5 Degrees).
     private final Pose scorePose = new Pose(74, 83, Math.toDegrees(43));
-    // Scoring Pose of our robot. It is facing the goal at a 43 degree angle.
-    private final Pose parkPose = new Pose(37, 121, Math.toDegrees(0));
+    // Scoring Pose of our robot. It is facing the goal at a 43 degree angle.5
+    private final Pose linePointPose = new Pose(37, 121, Math.toDegrees(0));
     //the parking of the Red score place
     ///     ///     ///     ///     ///     ///     ///     ///     ///
     private Path score, park;
@@ -59,8 +72,8 @@ public class PreTest extends OpMode {
         score = new Path(new BezierLine(startPose, scorePose));
         score.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
-        park = new Path(new BezierLine(scorePose, parkPose));
-        park.setLinearHeadingInterpolation(scorePose.getHeading(), parkPose.getHeading());
+        park = new Path(new BezierLine(scorePose, linePointPose));
+        park.setLinearHeadingInterpolation(scorePose.getHeading(), linePointPose.getHeading());
     }
 
     ///     ///     ///     ///     ///     ///     ///     ///     ///
@@ -89,8 +102,13 @@ public class PreTest extends OpMode {
         switch (pathState) {
             case 0:
                 follower.followPath(score, true);
+                if (!follower.isBusy()) {
+
+                    push(1600);
+
+                }
                 setPathState(1);
-                push(1600);
+
                 break;
             case 1:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
@@ -98,7 +116,7 @@ public class PreTest extends OpMode {
                     /* Score Preload */
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(park, false);
+                    follower.followPath(park, true);
                     setPathState(2);
                 }
                 break;
@@ -126,6 +144,7 @@ public class PreTest extends OpMode {
     public void setPathState(int pState) {
         pathState = pState;
         pathTimer.resetTimer();
+        ///
     }
     /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
     @Override
@@ -154,6 +173,7 @@ public class PreTest extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
+
     }
 
     /** This method is called continuously after Init while waiting for "play". **/

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 //gamepad 1 is driver
 //gamepad 2 is operator
@@ -13,7 +14,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @Configurable
 public class Teleop extends LinearOpMode {
     int count = 0;
+    boolean run = false;
     double setSpeed = 1;
+    private static ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -87,12 +90,16 @@ public class Teleop extends LinearOpMode {
             //if pressed twice/divisible by 2 it will stop motor, pressed once makes it go, etc
             if(count % 2 != 0){
                 fly.setPower(0);
-
+                run = false;
             }else if(count == 0){
                 fly.setPower(0);
+                run = false;
             }else{
-                fly.setPower(.67
-                );
+                fly.setPower(.67);
+                    while (timer.milliseconds() <= 500){
+
+                    }
+                run = true;
             }
 /*
             //preess
@@ -114,7 +121,7 @@ public class Teleop extends LinearOpMode {
 
 
             //Servo push into flywheel
-            if(gamepad2.aWasPressed()){
+            if(gamepad2.aWasPressed() && run){
                 rs.setPower(.67);
                 ls.setPower(.67);
             }

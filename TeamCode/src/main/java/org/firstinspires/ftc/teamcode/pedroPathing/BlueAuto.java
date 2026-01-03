@@ -16,12 +16,12 @@ public class BlueAuto extends LinearOpMode {
 
 
     private static ElapsedTime timer = new ElapsedTime();
-    public void drive(int milliseconds, int speed) {
+    public void drive(double milliseconds) {
         timer.reset();
-        FL.setPower(.1*speed);
-        FR.setPower(.1*speed);
-        BL.setPower(.1*speed);
-        BR.setPower(.1*speed);
+        FL.setPower(1);
+        FR.setPower(1);
+        BL.setPower(1);
+        BR.setPower(1);
 
         while (timer.milliseconds() <= milliseconds){
 
@@ -70,8 +70,20 @@ public class BlueAuto extends LinearOpMode {
             fly.setPower(.57);
 
 //        Run
-            drive(1250,5);
+            timer.reset();
+            FL.setPower(0.5);
+            FR.setPower(0.5);
+            BL.setPower(0.5);
+            BR.setPower(0.5);
 
+            while (timer.milliseconds() <= 1250){
+
+            }
+
+            FL.setPower(0);
+            FR.setPower(0);
+            BL.setPower(0);
+            BR.setPower(0);
 
 
 
@@ -98,8 +110,21 @@ public class BlueAuto extends LinearOpMode {
                 // and recounting the time
                 ls.setPower(0);
                 rs.setPower(0);
+                // reset timer for the backup
+                timer.reset();
+                FL.setPower(-.2);
+                FR.setPower(-.2);
+                BL.setPower(-.2);
+                BR.setPower(-.2);
 
-                drive(400,-2);
+                while (timer.milliseconds() <= 400){
+
+                }
+
+                FL.setPower(0);
+                FR.setPower(0);
+                BL.setPower(0);
+                BR.setPower(0);
             }
 
 

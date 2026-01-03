@@ -15,80 +15,88 @@ import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "Auto" ,group = "Examples")
-@Disabled
+
 public class Auto extends OpMode {
+    CRServo ls, rs;
+
+    /// M   E   T   H   O   D   S ///
+    private static ElapsedTime timer = new ElapsedTime();
+    public void push(double milliseconds){
+        // 400 = 1 push
+            rs.setPower(.67);
+            ls.setPower(.67);
+            while (timer.milliseconds() <= milliseconds){}
+            rs.setPower(0);
+            ls.setPower(0);
+    }
+
+    public void shootThree(){
+        push(400);
+        push(400);
+        push(400);
+    }
+
+
+    ///     ///     ///     ///     ///     ///     ///     ///     ///
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
 
 
-    private final Pose startPose = new Pose(118.4, 129.6, Math.toDegrees(0));
+    private final Pose startPose = new Pose(120.2, 125, Math.toDegrees(45));
     // Start Pose of robot, this is red goal, 4back until touching white line, parellel to deposit (36.5 Degrees).
-    private final Pose scorePose = new Pose(74, 83, Math.toDegrees(0));
-    // Scoring Pose of our robot. It is facing the goal at a 43 degree angle.
-    private final Pose parkPose = new Pose(37, 121, Math.toDegrees(0));
+    private final Pose scorePose = new Pose(74, 83, Math.toDegrees(43));
+    // Scoring Pose of our robot. It is facing the goal at a 43 degree angle.5
+    private final Pose linePointPose = new Pose(37, 121, Math.toDegrees(0));
     //the parking of the Red score place
-
-    private Path direct, park;
-
-
+    ///     ///     ///     ///     ///     ///     ///     ///     ///
+    private Path score, park;
     public void buildPaths() {
-        direct = new Path(new BezierLine(startPose, scorePose));
-        direct.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        score = new Path(new BezierLine(startPose, scorePose));
+        score.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
-        park = new Path(new BezierLine(scorePose, parkPose));
-        park.setLinearHeadingInterpolation(scorePose.getHeading(), parkPose.getHeading());
+        park = new Path(new BezierLine(scorePose, linePointPose));
+        park.setLinearHeadingInterpolation(scorePose.getHeading(), linePointPose.getHeading());
     }
 
-/*
-    @Override
-    public void init() {
-        CRServo ls, rs;
-        ls = hardwareMap.get(CRServo.class, "leftServo");
-        rs = hardwareMap.get(CRServo.class, "rightServo");
-
-        DcMotor fly;
-
-
-        fly = hardwareMap.get(DcMotor.class, "flywheel");
-
-        fly.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-
-       `Archive oj = new Archive();
-        oj.push(-.25);
-        oj.fly(68);
-
-        follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startPose);
-
-        follower.followPath(direct);
-
-        getRuntime();
-        oj.push(.25);
-        follower.followPath(park);
-
-    }
-
-*/
+    ///     ///     ///     ///     ///     ///     ///     ///     ///
     public void autonomousPathUpdate() {
+        CRServo ls, rs;
+        ls = hardwareMap.get(CRServo.class,"leftServo");
+        rs = hardwareMap.get(CRServo.class,"rightServo");
+
+        DcMotor FL, FR, BL, BR, fly;
+        FL = hardwareMap.get(DcMotor.class, "frontLeft");
+        FR = hardwareMap.get(DcMotor.class, "frontRight");
+        BL = hardwareMap.get(DcMotor.class, "backLeft");
+        BR = hardwareMap.get(DcMotor.class, "backRight");
+
+        fly = hardwareMap.get(DcMotor.class,"flywheel");
+
+        FR.setDirection(DcMotorSimple.Direction.REVERSE);
+        BR.setDirection(DcMotorSimple.Direction.REVERSE);
+        fly.setDirection(DcMotorSimple.Direction.REVERSE);
+        ls.setDirection(DcMotorSimple.Direction.REVERSE);
+        fly.setPower(.67);
+
+    ///     ///     ///     ///     ///     ///     ///     ///     ///
+
+
         switch (pathState) {
             case 0:
+                follower.followPath(score, true);
+                if (!follower.isBusy()) {
 
-                follower.followPath(direct);
+                    push(1600);
+
+                }
                 setPathState(1);
+
                 break;
             case 1:
-
-            /* You could check for
-            - Follower State: "if(!follower.isBusy()) {}"
-            - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
-            - Robot Position: "if(follower.getPose().getX() > 36) {}"
-            */
-
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if (!follower.isBusy()) {
                     /* Score Preload */
@@ -107,10 +115,22 @@ public class Auto extends OpMode {
                 break;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
     /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
     public void setPathState(int pState) {
         pathState = pState;
         pathTimer.resetTimer();
+        ///
     }
     /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
     @Override
@@ -139,17 +159,12 @@ public class Auto extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
-        telemetryM.update(telemetry);
 
     }
 
     /** This method is called continuously after Init while waiting for "play". **/
     @Override
-    public void init_loop() {
-        telemetryM.update(telemetry);
-        follower.update();
-        drawOnlyCurrent();
-    }
+    public void init_loop() {}
 
     /** This method is called once at the start of the OpMode.
      * It runs all the setup actions, including building paths and starting the path system **/
@@ -158,7 +173,7 @@ public class Auto extends OpMode {
         opmodeTimer.resetTimer();
         setPathState(0);
 
-        follower.activateAllPIDFs();
+        follower.activateAllPIDFs(); ///////////THIS NOT HERE; I PUT IT
 
     }
 

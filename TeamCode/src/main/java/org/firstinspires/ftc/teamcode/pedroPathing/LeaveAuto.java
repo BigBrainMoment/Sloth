@@ -65,8 +65,20 @@ public class LeaveAuto extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
 
-        drive(1000);
+        timer.reset();
+        FL.setPower(-0.5);
+        FR.setPower(-0.5);
+        BL.setPower(-0.5);
+        BR.setPower(-0.5);
 
+        while (timer.milliseconds() <= 767){
+
+        }
+
+        FL.setPower(0);
+        FR.setPower(0);
+        BL.setPower(0);
+        BR.setPower(0);
     }
 
 
